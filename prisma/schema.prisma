@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// table Users
+model Users {
+  id              Int             @id @default(autoincrement())
+  username        String          @unique
+  password        String
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  // foreign key
+  notes           Notes[]         // satu user bisa memiliki banyak notes
+}
+
+// table Notes
+model Notes {
+  id              Int             @id @default(autoincrement())
+  user_id         Int
+  title           String
+  body            String
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  // relasi
+  users           Users           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
